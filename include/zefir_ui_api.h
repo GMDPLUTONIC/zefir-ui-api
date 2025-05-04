@@ -23,6 +23,10 @@ typedef struct {
 } Zefir_ImVec4;
 
 typedef struct {
+    float x, y;
+} Zefir_ImVec2;
+
+typedef struct {
     int m_value;
     bool m_hasValue;
 } Zefir_Optional_Int;
@@ -336,7 +340,7 @@ extern "C" { /* extern "C" */
     /* Id functions */
     ZEFIR_API Zefir_UId64 Zefir_hashId_String(const char* const string);
     ZEFIR_API Zefir_UId64 Zefir_hashId_UId64(Zefir_UId64 value);
-    ZEFIR_API Zefir_UId64 Zefir_autoRegisterId(Zefir_UId64 value); // only for c++ macro use, otherwise use Zefir_hashId
+    ZEFIR_API Zefir_UId64 Zefir_autoRegisterId(Zefir_UId64 value); /* only for c++ macro use, otherwise use Zefir_hashId_Type */
 
     /* Component functions */
     ZEFIR_API void Zefir_renderText(const char* const text);
@@ -377,13 +381,14 @@ extern "C" { /* extern "C" */
  * Todo: Implement C++ wrappers for the C API functions
  *
  */
+
 #ifdef __cplusplus
 
 
 #endif
 
  /*
-  * 
+  *
   * Macros for generating unique IDs
   * This macro generates a unique ID based on the current time and a counter.
   * Use ZEFIR_NEW_UID() to generate a new unique ID, every usage of the macro
