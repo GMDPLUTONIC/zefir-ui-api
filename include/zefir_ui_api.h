@@ -23,9 +23,14 @@ typedef struct {
 } Zefir_ImVec4;
 
 typedef struct {
-    int m_value; 
+    int m_value;
     bool m_hasValue;
 } Zefir_Optional_Int;
+
+typedef struct {
+    bool m_value;
+    bool m_hasValue;
+} Zefir_Optional_Bool;
 
 typedef struct {
     Zefir_TextBlock_Alignment m_value;
@@ -33,42 +38,42 @@ typedef struct {
 } Zefir_Optional_TextBlock_Alignment;
 
 typedef struct {
-    float m_value; 
+    float m_value;
     bool m_hasValue;
 } Zefir_Optional_Float;
 
 typedef struct {
-    const char* m_value; 
+    const char* m_value;
     bool m_hasValue;
 } Zefir_Optional_String;
 
 typedef struct {
-    uint8_t* m_value; 
+    uint8_t* m_value;
     bool m_hasValue;
 } Zefir_Optional_PUInt8;
 
 typedef struct {
-    bool* m_value; 
+    bool* m_value;
     bool m_hasValue;
 } Zefir_Optional_PBool;
 
 typedef struct {
-    uint8_t m_value; 
+    uint8_t m_value;
     bool m_hasValue;
 } Zefir_Optional_UInt8;
 
 typedef struct {
-    Zefir_PImFont m_value; 
+    Zefir_PImFont m_value;
     bool m_hasValue;
 } Zefir_Optional_PImFont;
 
 typedef struct {
-    Zefir_ImVec4 m_value; 
+    Zefir_ImVec4 m_value;
     bool m_hasValue;
 } Zefir_Optional_ImVec4;
 
 typedef struct {
-    void (ZEFIR_CALLBACK *m_value)(void);
+    void (ZEFIR_CALLBACK* m_value)(void);
     bool m_hasValue;
 } Zefir_Optional_ZefirCallback;
 
@@ -103,7 +108,7 @@ typedef struct {
 typedef struct {
     Zefir_UId64 m_uniqueId;
     const char* m_label;
-    bool* m_value; 
+    bool* m_value;
     Zefir_Optional_PUInt8 m_key;
     Zefir_Optional_String m_info;
     Zefir_Optional_PImFont m_customInfoFont;
@@ -208,7 +213,7 @@ typedef struct {
     Zefir_Optional_TextBlock_Alignment m_alignment; /* Using int for TextBlock_Alignment */
     Zefir_Optional_Float m_maxHeight;
     Zefir_Optional_Float m_contentRatio;
-    Zefir_Optional_Int m_wordWrap; /* Using int for bool */
+    Zefir_Optional_Bool m_wordWrap;
 } Zefir_TextBlockData;
 
 /* Data structure for Hotkey parameters */
@@ -367,21 +372,24 @@ extern "C" { /* extern "C" */
 #endif
 
 /*
- * 
+ *
  * C++ wrappers for the C API
  * Todo: Implement C++ wrappers for the C API functions
- * 
+ *
  */
 #ifdef __cplusplus
 
 
 #endif
 
-/*
- * Mac
- * 
- * 
- */
+ /*
+  * 
+  * Macros for generating unique IDs
+  * This macro generates a unique ID based on the current time and a counter.
+  * Use ZEFIR_NEW_UID() to generate a new unique ID, every usage of the macro
+  * has a consistent UId.
+  *
+  */
 
 #ifdef __cplusplus
 #define ZEFIR_NEW_UID                                                                                                             \
