@@ -384,12 +384,12 @@ extern "C" { /* extern "C" */
  */
 
 #ifdef __cplusplus
-#define ZEFIR_NEW_UID																						                    \
-    []() -> Zefir_UId64																			                                \
-    {																										                    \
-        static const Zefir_UId64 result =                                                                                       \
-            Zefir_autoRegisterId(Zefir_hashId_UId64(Zefir_hashId_String(__TIME__) ^ Zefir_hashId_UId64(__COUNTER__)));			\
-        return result;																						                    \
+#define ZEFIR_NEW_UID                                                                                                             \
+    []() -> Zefir_UId64                                                                                                           \
+    {                                                                                                                             \
+        static const Zefir_UId64 result =                                                                                         \
+            Zefir_autoRegisterId(Zefir_hashId_UId64(Zefir_hashId_String(__TIME__) ^ Zefir_hashId_UId64(__COUNTER__)));            \
+        return result;                                                                                                            \
     }
 #else 
 #define ZEFIR_NEW_UID() (Zefir_hashId_UId64(Zefir_hashId_String(__TIMESTAMP__) ^ Zefir_hashId_String(__TIME__) ^ Zefir_hashId_UId64(__COUNTER__)))
