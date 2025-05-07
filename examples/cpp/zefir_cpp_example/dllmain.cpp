@@ -16,7 +16,7 @@ static void ZEFIR_CALLBACK renderContentCpp()
 {
     zefir::api::cm::text("Hello from C++");
     zefir::api::cm::text("This is a test window");
-    
+
     zefir::api::cm::button({
         .m_uniqueId = ZEFIR_NEW_UID(),
         .m_label = "Click me",
@@ -40,6 +40,7 @@ static void ZEFIR_CALLBACK showMessageBoxC()
         .m_text = "Hello from C! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         .m_customWidth = {.m_value = 450, .m_hasValue = true},
         .m_alignment = {.m_value = Zefir_TextBlock_Alignment_Left, .m_hasValue = true} };
+        
     Zefir_openMessageBoxText(&data);
 }
 
