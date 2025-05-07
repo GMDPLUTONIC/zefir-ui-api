@@ -16,10 +16,7 @@ static void ZEFIR_CALLBACK renderContentCpp()
 {
     zefir::api::cm::text("Hello from C++");
     zefir::api::cm::text("This is a test window");
-
-    // You can use the Zefir API to render content in the window
-    // For example, you can create buttons, text fields, etc.
-
+    
     zefir::api::cm::button({
         .m_uniqueId = ZEFIR_NEW_UID(),
         .m_label = "Click me",
