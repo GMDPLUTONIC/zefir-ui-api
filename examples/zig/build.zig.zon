@@ -1,0 +1,8 @@
+.{
+    .name = .zefir_zig_example,
+    .version = "1.0.0",
+    .fingerprint = 0x7c9c31e753b2d6ed,
+    .minimum_zig_version = "0.14.0",
+    .dependencies = .{},
+    .paths = .{ "build.zig", "build.zig.zon", "src" },
+}
