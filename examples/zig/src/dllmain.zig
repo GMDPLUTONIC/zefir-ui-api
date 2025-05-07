@@ -6,11 +6,8 @@ const c = @cImport({
     @cInclude("zefir_ui_api.h");
 });
 
-fn hashSourceLocation(loc: std.builtin.SourceLocation) u64 {
-    // Seed can be anything, make sure you change this
-    // to a unique value for your project
-    // to avoid hash collisions with other projects
-    var hasher = std.hash.Wyhash.init(0);
+fn hashSourceLocation(comptime loc: std.builtin.SourceLocation) comptime_int {
+    var hasher = std.hash.Fnv1a_64.init();
     hasher.update(loc.module);
     hasher.update(loc.file);
     hasher.update(loc.fn_name);
@@ -34,7 +31,7 @@ fn buttonOnActivate() callconv(std.builtin.CallingConvention.winapi) void {
 fn renderContent() callconv(std.builtin.CallingConvention.winapi) void {
     // Render a button
     var buttonData = std.mem.zeroInit(c.Zefir_ButtonData, .{
-        .m_uniqueId = hashSourceLocation(@src()),
+        .m_uniqueId = comptime hashSourceLocation(@src()),
         .m_label = "Test Button".ptr,
         .m_info = .{
             .m_value = "This is a test button".ptr,
