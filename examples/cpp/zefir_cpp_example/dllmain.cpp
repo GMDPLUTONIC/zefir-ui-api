@@ -35,13 +35,13 @@ static void ZEFIR_CALLBACK addWindowCpp()
 
 static void ZEFIR_CALLBACK showMessageBoxC()
 {
-    Zefir_MessageBoxTextData data{
+    Zefir_PopupTextData data{
         .m_title = "C Popup",
         .m_text = "Hello from C! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         .m_customWidth = {.m_value = 450, .m_hasValue = true},
         .m_alignment = {.m_value = Zefir_TextBlock_Alignment_Left, .m_hasValue = true} };
         
-    Zefir_openMessageBoxText(&data);
+    Zefir_openPopupText(&data);
 }
 
 static void ZEFIR_CALLBACK renderContentC()

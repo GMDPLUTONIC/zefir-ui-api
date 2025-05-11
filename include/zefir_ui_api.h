@@ -1,3 +1,8 @@
+/*
+* Built on: 2025-05-12 00:14 AM
+* For ToastedMarshmellow v37.0-alpha-2
+*/
+
 #ifndef ZEFIR_UI_API_H
 #define ZEFIR_UI_API_H
 
@@ -95,6 +100,12 @@ typedef struct {
     bool m_hasValue;
 } Zefir_Optional_ZefirCallback;
 
+
+typedef struct {
+    void (ZEFIR_CALLBACK* m_value)(size_t, const char*);
+    bool m_hasValue;
+} Zefir_Optional_ZefirCallback_SizeT_String;
+
 typedef struct {
     void (ZEFIR_CALLBACK* m_value)(int);
     bool m_hasValue;
@@ -185,7 +196,7 @@ typedef struct {
     Zefir_UId64 m_uniqueId;
     const char** m_list; /* Array of strings */
     size_t m_listCount;    /* Number of items in list */
-    uint8_t* m_value;
+    size_t* m_value;
     Zefir_Optional_ZefirCallback m_onActivate;
     Zefir_Optional_ZefirCallback m_onRelease;
 } Zefir_ListboxData;
@@ -287,7 +298,7 @@ typedef struct {
     Zefir_Optional_ZefirCallback m_onDismiss;
 } Zefir_PopupCustomData;
 
-/* Data structure for MessageBoxText parameters */
+/* Data structure for PopupText parameters */
 
 typedef struct {
     const char* m_title;
@@ -296,9 +307,9 @@ typedef struct {
     Zefir_Optional_PImFont m_customFont;
     Zefir_Optional_TextBlock_Alignment m_alignment;
     Zefir_Optional_ZefirCallback m_onDismiss;
-} Zefir_MessageBoxTextData;
+} Zefir_PopupTextData;
 
-/* Data structure for MessageBoxYesNo parameters */
+/* Data structure for PopupConfirm parameters */
 
 typedef struct {
     const char* m_title;
@@ -308,9 +319,9 @@ typedef struct {
     Zefir_Optional_TextBlock_Alignment m_alignment;
     Zefir_Optional_ZefirCallback m_onConfirm;
     Zefir_Optional_ZefirCallback m_onDismiss;
-} Zefir_MessageBoxYesNoData;
+} Zefir_PopupConfirmData;
 
-/* Data structure for InputBoxInt parameters */
+/* Data structure for PopupInputInt parameters */
 
 typedef struct {
     const char* m_title;
@@ -326,9 +337,9 @@ typedef struct {
     Zefir_Optional_Int m_max;
     Zefir_Optional_ZefirCallback m_onInputActive;
     Zefir_Optional_ZefirCallback m_onInputRelease;
-} Zefir_InputBoxIntData;
+} Zefir_PopupInputIntData;
 
-/* Data structure for InputBoxFloat parameters */
+/* Data structure for PopupInputFloat parameters */
 
 typedef struct {
     const char* m_title;
@@ -344,9 +355,9 @@ typedef struct {
     Zefir_Optional_Float m_max;
     Zefir_Optional_ZefirCallback m_onInputActive;
     Zefir_Optional_ZefirCallback m_onInputRelease;
-} Zefir_InputBoxFloatData;
+} Zefir_PopupInputFloatData;
 
-/* Data structure for InputBoxText parameters */
+/* Data structure for PopupInputText parameters */
 
 typedef struct {
     const char* m_title;
@@ -358,9 +369,9 @@ typedef struct {
     Zefir_Optional_ZefirCallback_String m_onDismiss;
     Zefir_Optional_ZefirCallback m_onInputActive;
     Zefir_Optional_ZefirCallback m_onInputRelease;
-} Zefir_InputBoxTextData;
+} Zefir_PopupInputTextData;
 
-/* Data structure for InputBoxHintedText parameters */
+/* Data structure for PopupInputHintedText parameters */
 
 typedef struct {
     const char* m_title;
@@ -374,7 +385,22 @@ typedef struct {
     Zefir_Optional_ZefirCallback_String m_onDismiss;
     Zefir_Optional_ZefirCallback m_onInputActive;
     Zefir_Optional_ZefirCallback m_onInputRelease;
-} Zefir_InputBoxHintedTextData;
+} Zefir_PopupInputHintedTextData;
+
+/* Data structure for PopupInputListbox parameters */
+typedef struct {
+    const char* m_title;
+    const char* m_text;
+    const char** m_list; /* Array of strings */
+    size_t m_listCount;    /* Number of items in list */
+    Zefir_Optional_Float m_customWidth;
+    Zefir_Optional_PImFont m_customFont;
+    Zefir_Optional_TextBlock_Alignment m_alignment;
+    Zefir_Optional_ZefirCallback_SizeT_String m_onConfirm;
+    Zefir_Optional_ZefirCallback_SizeT_String m_onDismiss;
+    Zefir_Optional_ZefirCallback m_onInputActivate;
+    Zefir_Optional_ZefirCallback m_onInputRelease;
+} Zefir_PopupInputListboxData;
 
 /* Data structure for Window parameters */
 
@@ -425,6 +451,13 @@ typedef struct {
     Zefir_Optional_Int m_delayMs;
 } Zefir_ScheduleRepeatData;
 
+/* Data structure for OutString */
+typedef struct {
+    char* m_buffer;
+    size_t m_bufferSize;
+    size_t m_outLength; /* Length of the output string */ 
+} Zefir_OutString;
+
 /*
  *
  * Functions declarations
@@ -443,6 +476,23 @@ extern "C" { /* extern "C" */
     ZEFIR_API(Zefir_VersionData) Zefir_getAppVersion();
     ZEFIR_API(Zefir_VersionData) Zefir_getLatestStableVersion();
     ZEFIR_API(Zefir_VersionData) Zefir_getLatestBetaVersion();
+    ZEFIR_API(void) Zefir_getAppName(Zefir_OutString* out);
+
+    /* Directory functions */
+    ZEFIR_API(void) Zefir_getAppDataDirectory(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getAppTempDirectory(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getLogPath(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getLogDirectory(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getStatePath(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getStateDirectory(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getConfigPath(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getConfigDirectory(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getExtensionDirectory(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getImGuiDirectory(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getExecutablePath(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getExecutableDirectory(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getModulePath(Zefir_OutString* out);
+    ZEFIR_API(void) Zefir_getModuleDirectory(Zefir_OutString* out);
 
     /* Font functions */
     ZEFIR_API(Zefir_PImFont) Zefir_getTitleFont();
@@ -480,12 +530,13 @@ extern "C" { /* extern "C" */
 
     /* Popup functions */
     ZEFIR_API(bool) Zefir_openPopupCustom(const Zefir_PopupCustomData* const data);
-    ZEFIR_API(bool) Zefir_openMessageBoxText(const Zefir_MessageBoxTextData* const data);
-    ZEFIR_API(bool) Zefir_openMessageBoxYesNo(const Zefir_MessageBoxYesNoData* const data);
-    ZEFIR_API(bool) Zefir_openInputBoxInt(const Zefir_InputBoxIntData* const data);
-    ZEFIR_API(bool) Zefir_openInputBoxFloat(const Zefir_InputBoxFloatData* const data);
-    ZEFIR_API(bool) Zefir_openInputBoxText(const Zefir_InputBoxTextData* const data);
-    ZEFIR_API(bool) Zefir_openInputBoxTextHinted(const Zefir_InputBoxHintedTextData* const data);
+    ZEFIR_API(bool) Zefir_openPopupText(const Zefir_PopupTextData* const data);
+    ZEFIR_API(bool) Zefir_openPopupConfirm(const Zefir_PopupConfirmData* const data);
+    ZEFIR_API(bool) Zefir_openPopupInputInt(const Zefir_PopupInputIntData* const data);
+    ZEFIR_API(bool) Zefir_openPopupInputFloat(const Zefir_PopupInputFloatData* const data);
+    ZEFIR_API(bool) Zefir_openPopupInputText(const Zefir_PopupInputTextData* const data);
+    ZEFIR_API(bool) Zefir_openPopupInputTextHinted(const Zefir_PopupInputHintedTextData* const data);
+    ZEFIR_API(bool) Zefir_openPopupInputListbox(const Zefir_PopupInputListboxData* const data);
 
     /* Window functions */
     ZEFIR_API(bool) Zefir_addWindow(const Zefir_WindowData* const data);
@@ -510,6 +561,23 @@ extern "C" { /* extern "C" */
     ZEFIR_CREATE_DECLARATION_HELPER(Zefir_VersionData, Zefir_getAppVersion, void);
     ZEFIR_CREATE_DECLARATION_HELPER(Zefir_VersionData, Zefir_getLatestStableVersion, void);
     ZEFIR_CREATE_DECLARATION_HELPER(Zefir_VersionData, Zefir_getLatestBetaVersion, void);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getAppName, Zefir_OutString* out);
+
+    /* Directory functions */
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getAppDataDirectory, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getAppTempDirectory, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getLogPath, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getLogDirectory, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getStatePath, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getStateDirectory, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getConfigPath, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getConfigDirectory, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getExtensionDirectory, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getImGuiDirectory, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getExecutablePath, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getExecutableDirectory, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getModulePath, Zefir_OutString* out);
+    ZEFIR_CREATE_DECLARATION_HELPER(void, Zefir_getModuleDirectory, Zefir_OutString* out);
 
     /* Font functions */
     ZEFIR_CREATE_DECLARATION_HELPER(Zefir_PImFont, Zefir_getTitleFont, void);
@@ -547,12 +615,13 @@ extern "C" { /* extern "C" */
 
     /* Popup functions */
     ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openPopupCustom, const Zefir_PopupCustomData* const data);
-    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openMessageBoxText, const Zefir_MessageBoxTextData* const data);
-    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openMessageBoxYesNo, const Zefir_MessageBoxYesNoData* const data);
-    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openInputBoxInt, const Zefir_InputBoxIntData* const data);
-    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openInputBoxFloat, const Zefir_InputBoxFloatData* const data);
-    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openInputBoxText, const Zefir_InputBoxTextData* const data);
-    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openInputBoxTextHinted, const Zefir_InputBoxHintedTextData* const data);
+    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openPopupText, const Zefir_PopupTextData* const data);
+    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openPopupConfirm, const Zefir_PopupConfirmData* const data);
+    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openPopupInputInt, const Zefir_PopupInputIntData* const data);
+    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openPopupInputFloat, const Zefir_PopupInputFloatData* const data);
+    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openPopupInputText, const Zefir_PopupInputTextData* const data);
+    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openPopupInputTextHinted, const Zefir_PopupInputHintedTextData* const data);
+    ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_openPopupInputListbox, const Zefir_PopupInputListboxData* const data);
 
     /* Window functions */
     ZEFIR_CREATE_DECLARATION_HELPER(bool, Zefir_addWindow, const Zefir_WindowData* const data);
@@ -571,6 +640,23 @@ extern "C" { /* extern "C" */
             ZEFIR_CREATE_RESOLVE_HELPER(hZefir, Zefir_VersionData, Zefir_getAppVersion);
             ZEFIR_CREATE_RESOLVE_HELPER(hZefir, Zefir_VersionData, Zefir_getLatestStableVersion);
             ZEFIR_CREATE_RESOLVE_HELPER(hZefir, Zefir_VersionData, Zefir_getLatestBetaVersion);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getAppName);
+
+            /* Directory functions */
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getAppDataDirectory);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getAppTempDirectory);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getLogPath);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getLogDirectory);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getStatePath);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getStateDirectory);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getConfigPath);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getConfigDirectory);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getExtensionDirectory);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getImGuiDirectory);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getExecutablePath);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getExecutableDirectory);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getModulePath);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, void, Zefir_getModuleDirectory);
 
             /* Font functions */
             ZEFIR_CREATE_RESOLVE_HELPER(hZefir, Zefir_PImFont, Zefir_getTitleFont);
@@ -608,12 +694,13 @@ extern "C" { /* extern "C" */
 
             /* Popup functions */
             ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openPopupCustom);
-            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openMessageBoxText);
-            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openMessageBoxYesNo);
-            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openInputBoxInt);
-            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openInputBoxFloat);
-            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openInputBoxText);
-            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openInputBoxTextHinted);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openPopupText);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openPopupConfirm);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openPopupInputInt);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openPopupInputFloat);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openPopupInputText);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openPopupInputTextHinted);
+            ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_openPopupInputListbox);
 
             /* Window functions */
             ZEFIR_CREATE_RESOLVE_HELPER(hZefir, bool, Zefir_addWindow);
@@ -645,7 +732,112 @@ extern "C" { /* extern "C" */
 #include <memory>
 #include <unordered_map>
 
- /* This needs to be separated from the internal zefir:: namespace */
+/* do not call any of these functions here, only for internal use */
+namespace zefir::api
+{
+    namespace outstring::internal
+    {
+        inline char s_globalBuffer[1024u * 1024u * 64u] = { 0 }; /* 64 MB static buffer, should be plenty */
+        /* This is a workaround for the C API, which does not return a string */ 
+        /* This returns a string the return value, if any, as a pair, void function will return nullptr */
+        template<typename T> auto getString(T fn)
+        {
+            Zefir_OutString outString;
+            outString.m_buffer = s_globalBuffer;
+            outString.m_bufferSize = sizeof(s_globalBuffer);
+            outString.m_outLength = 0u;
+            if constexpr (std::is_same_v<decltype(fn(&outString)), void>)
+            {
+                fn(&outString);
+                return std::make_pair(
+                    std::string(outString.m_buffer, outString.m_outLength ? outString.m_outLength - 1 : 0),
+                    (void*)nullptr);
+            }
+            else
+            {
+                auto ret = fn(&outString);
+                return std::make_pair(
+                    std::string(outString.m_buffer, outString.m_outLength ? outString.m_outLength - 1 : 0),
+                    ret);
+            }
+        }
+    }
+    namespace cm::internal
+    {
+        inline bool colorPickerHinted(const Zefir_HintedColorPickerData& data, const std::unordered_map<std::string, Zefir_ImVec4>& hints)
+        {
+            if (hints.size())
+            {
+                auto dataCopy = data;
+                std::vector<const char*> hintKeys;
+                std::vector<Zefir_ImVec4> hintValues;
+                for (const auto& [key, value] : hints)
+                {
+                    hintKeys.push_back(key.c_str());
+                    hintValues.push_back(value);
+                }
+                dataCopy.m_hintKeys = hintKeys.data();
+                dataCopy.m_hintValues = hintValues.data();
+                dataCopy.m_hintCount = hintKeys.size();
+                return Zefir_renderHintedColorPicker(&dataCopy);
+            }
+            return Zefir_renderHintedColorPicker(&data);
+        }
+        inline bool listbox(const Zefir_ListboxData& data, const std::vector<std::string>& list)
+        {
+            if (list.size())
+            {
+                auto dataCopy = data;
+                std::vector<const char*> listPtrs;
+                for (const auto& item : list)
+                {
+                    listPtrs.push_back(item.c_str());
+                }
+                dataCopy.m_list = listPtrs.data();
+                dataCopy.m_listCount = listPtrs.size();
+                return Zefir_renderListbox(&dataCopy);
+            }
+            return Zefir_renderListbox(&data);
+        }
+        inline bool inputTextHinted(const Zefir_InputHintedTextData& data, const std::vector<std::string>& hints)
+        {
+            if (hints.size())
+            {
+                auto dataCopy = data;
+                std::vector<const char*> hintPtrs;
+                for (const auto& hint : hints)
+                {
+                    hintPtrs.push_back(hint.c_str());
+                }
+                dataCopy.m_hints = hintPtrs.data();
+                dataCopy.m_hintCount = hintPtrs.size();
+                return Zefir_renderInputTextHinted(&dataCopy);
+            }
+            return Zefir_renderInputTextHinted(&data);
+        }
+    }
+    namespace popup::internal
+    {
+        inline bool popupInputListbox(const Zefir_PopupInputListboxData& data, const std::vector<std::string>& list)
+        {
+            if (list.size())
+            {
+                auto dataCopy = data;
+                std::vector<const char*> listPtrs;
+                for (const auto& item : list)
+                {
+                    listPtrs.push_back(item.c_str());
+                }
+                dataCopy.m_list = listPtrs.data();
+                dataCopy.m_listCount = listPtrs.size();
+                return Zefir_openPopupInputListbox(&dataCopy);
+            }
+            return Zefir_openPopupInputListbox(&data);
+        }
+    }
+}
+
+/* This needs to be separated from the internal zefir:: namespace */
 namespace zefir::api
 {
     namespace app /* Common functions */
@@ -655,6 +847,25 @@ namespace zefir::api
         inline Zefir_VersionData getVersion() { return Zefir_getAppVersion(); }
         inline Zefir_VersionData getLatestStableVersion() { return Zefir_getLatestStableVersion(); }
         inline Zefir_VersionData getLatestBetaVersion() { return Zefir_getLatestBetaVersion(); }
+        inline std::string getAppName() { return outstring::internal::getString(Zefir_getAppName).first; }
+    }
+
+    namespace dir /* Directory functions */
+    {
+        inline std::string getAppDataDirectory() { return outstring::internal::getString(Zefir_getAppDataDirectory).first; }
+        inline std::string getAppTempDirectory() { return outstring::internal::getString(Zefir_getAppTempDirectory).first; }
+        inline std::string getLogPath() { return outstring::internal::getString(Zefir_getLogPath).first; }
+        inline std::string getLogDirectory() { return outstring::internal::getString(Zefir_getLogDirectory).first; }
+        inline std::string getStatePath() { return outstring::internal::getString(Zefir_getStatePath).first; }
+        inline std::string getStateDirectory() { return outstring::internal::getString(Zefir_getStateDirectory).first; }
+        inline std::string getConfigPath() { return outstring::internal::getString(Zefir_getConfigPath).first; }
+        inline std::string getConfigDirectory() { return outstring::internal::getString(Zefir_getConfigDirectory).first; }
+        inline std::string getExtensionDirectory() { return outstring::internal::getString(Zefir_getExtensionDirectory).first; }
+        inline std::string getImGuiDirectory() { return outstring::internal::getString(Zefir_getImGuiDirectory).first; }
+        inline std::string getExecutablePath() { return outstring::internal::getString(Zefir_getExecutablePath).first; }
+        inline std::string getExecutableDirectory() { return outstring::internal::getString(Zefir_getExecutableDirectory).first; }
+        inline std::string getModulePath() { return outstring::internal::getString(Zefir_getModulePath).first; }
+        inline std::string getModuleDirectory() { return outstring::internal::getString(Zefir_getModuleDirectory).first; }
     }
 
     namespace log /* Logging functions */
@@ -683,75 +894,27 @@ namespace zefir::api
         inline bool button(const Zefir_ButtonData& data) { return Zefir_renderButton(&data); }
         inline bool checkbox(const Zefir_CheckboxData& data) { return Zefir_renderCheckbox(&data); }
         inline bool colorPicker(const Zefir_ColorPickerData& data) { return Zefir_renderColorPicker(&data); }
-        inline bool colorPickerHinted(const Zefir_HintedColorPickerData& data, const std::unordered_map<std::string, Zefir_ImVec4>& hints = {})
-        {
-            if (hints.size())
-            {
-                auto dataCopy = data;
-                std::vector<const char*> hintKeys;
-                std::vector<Zefir_ImVec4> hintValues;
-                for (const auto& [key, value] : hints)
-                {
-                    hintKeys.push_back(key.c_str());
-                    hintValues.push_back(value);
-                }
-                dataCopy.m_hintKeys = hintKeys.data();
-                dataCopy.m_hintValues = hintValues.data();
-                dataCopy.m_hintCount = hintKeys.size();
-                return Zefir_renderHintedColorPicker(&dataCopy);
-            }
-            return Zefir_renderHintedColorPicker(&data);
-        }
-        inline bool listbox(const Zefir_ListboxData& data, const std::vector<std::string>& list = {})
-        {
-            if (list.size())
-            {
-                auto dataCopy = data;
-                std::vector<const char*> listPtrs;
-                for (const auto& item : list)
-                {
-                    listPtrs.push_back(item.c_str());
-                }
-                dataCopy.m_list = listPtrs.data();
-                dataCopy.m_listCount = listPtrs.size();
-                return Zefir_renderListbox(&dataCopy);
-            }
-            return Zefir_renderListbox(&data);
-        }
+        inline bool colorPickerHinted(const Zefir_HintedColorPickerData& data, const std::unordered_map<std::string, Zefir_ImVec4>& hints = {}) { return internal::colorPickerHinted(data, hints); }
+        inline bool listbox(const Zefir_ListboxData& data, const std::vector<std::string>& list = {}) { return internal::listbox(data, list); }
         inline bool textBlock(const Zefir_TextBlockData& data) { return Zefir_renderTextBlock(&data); }
         inline bool hotkey(const Zefir_HotkeyData& data) { return Zefir_renderHotkey(&data); }
         inline bool horizontalBox(const Zefir_HorizontalBoxData& data) { return Zefir_renderHorizontalBox(&data); }
         inline bool inputInt(const Zefir_InputIntData& data) { return Zefir_renderInputInt(&data); }
         inline bool inputFloat(const Zefir_InputFloatData& data) { return Zefir_renderInputFloat(&data); }
         inline bool inputText(const Zefir_InputTextData& data) { return Zefir_renderInputText(&data); }
-        inline bool inputTextHinted(const Zefir_InputHintedTextData& data, const std::vector<std::string>& hints = {})
-        {
-            if (hints.size())
-            {
-                auto dataCopy = data;
-                std::vector<const char*> hintPtrs;
-                for (const auto& hint : hints)
-                {
-                    hintPtrs.push_back(hint.c_str());
-                }
-                dataCopy.m_hints = hintPtrs.data();
-                dataCopy.m_hintCount = hintPtrs.size();
-                return Zefir_renderInputTextHinted(&dataCopy);
-
-            }
-            return Zefir_renderInputTextHinted(&data);
-        }
+        inline bool inputTextHinted(const Zefir_InputHintedTextData& data, const std::vector<std::string>& hints = {}) { return internal::inputTextHinted(data, hints); }
     }
 
     namespace popup /* Popup functions */
     {
         inline bool custom(const Zefir_PopupCustomData& data) { return Zefir_openPopupCustom(&data); }
-        inline bool text(const Zefir_MessageBoxTextData& data) { return Zefir_openMessageBoxText(&data); }
-        inline bool yesNo(const Zefir_MessageBoxYesNoData& data) { return Zefir_openMessageBoxYesNo(&data); }
-        inline bool inputInt(const Zefir_InputBoxIntData& data) { return Zefir_openInputBoxInt(&data); }
-        inline bool inputFloat(const Zefir_InputBoxFloatData& data) { return Zefir_openInputBoxFloat(&data); }
-        inline bool inputText(const Zefir_InputBoxTextData& data) { return Zefir_openInputBoxText(&data); }
-        inline bool inputTextHinted(const Zefir_InputBoxHintedTextData& data) { return Zefir_openInputBoxTextHinted(&data); }
+        inline bool text(const Zefir_PopupTextData& data) { return Zefir_openPopupText(&data); }
+        inline bool yesNo(const Zefir_PopupConfirmData& data) { return Zefir_openPopupConfirm(&data); }
+        inline bool inputInt(const Zefir_PopupInputIntData& data) { return Zefir_openPopupInputInt(&data); }
+        inline bool inputFloat(const Zefir_PopupInputFloatData& data) { return Zefir_openPopupInputFloat(&data); }
+        inline bool inputText(const Zefir_PopupInputTextData& data) { return Zefir_openPopupInputText(&data); }
+        inline bool inputTextHinted(const Zefir_PopupInputHintedTextData& data) { return Zefir_openPopupInputTextHinted(&data); }
+        inline bool inputListbox(const Zefir_PopupInputListboxData& data, const std::vector<std::string>& hints = {}) { return internal::popupInputListbox(data, hints); }
     }
 
     namespace window /* Window functions */
@@ -1223,16 +1386,16 @@ namespace zefir::api
  *        - Zefir_Optional_Float m_customWidth: Optional custom width
  *        - Zefir_Optional_ZefirCallback m_onDismiss: Optional callback on dismiss
  *
- * Zefir_openMessageBoxText
- *    C:   bool Zefir_openMessageBoxText(const Zefir_MessageBoxTextData* const data)
- *    C++: bool zefir::api::popup::text(const Zefir_MessageBoxTextData& data)
+ * Zefir_openPopupText
+ *    C:   bool Zefir_openPopupText(const Zefir_PopupTextData* const data)
+ *    C++: bool zefir::api::popup::text(const Zefir_PopupTextData& data)
  *    Description: Opens a message box with text.
  *    Parameters:
- *      - const Zefir_MessageBoxTextData* const data (C): Message box configuration data
- *      - const Zefir_MessageBoxTextData& data (C++): Message box configuration data
+ *      - const Zefir_PopupTextData* const data (C): Message box configuration data
+ *      - const Zefir_PopupTextData& data (C++): Message box configuration data
  *    Returns: bool (true if opened successfully)
  *    Related Structures:
- *      Zefir_MessageBoxTextData
+ *      Zefir_PopupTextData
  *        - const char* m_title: Message box title
  *        - const char* m_text: Message text
  *        - Zefir_Optional_Float m_customWidth: Optional custom width
@@ -1240,16 +1403,16 @@ namespace zefir::api
  *        - Zefir_Optional_TextBlock_Alignment m_alignment: Optional text alignment
  *        - Zefir_Optional_ZefirCallback m_onDismiss: Optional callback on dismiss
  *
- * Zefir_openMessageBoxYesNo
- *    C:   bool Zefir_openMessageBoxYesNo(const Zefir_MessageBoxYesNoData* const data)
- *    C++: bool zefir::api::popup::yesNo(const Zefir_MessageBoxYesNoData& data)
+ * Zefir_openPopupConfirm
+ *    C:   bool Zefir_openPopupConfirm(const Zefir_PopupConfirmData* const data)
+ *    C++: bool zefir::api::popup::yesNo(const Zefir_PopupConfirmData& data)
  *    Description: Opens a yes/no message box.
  *    Parameters:
- *      - const Zefir_MessageBoxYesNoData* const data (C): Yes/no message box configuration data
- *      - const Zefir_MessageBoxYesNoData& data (C++): Yes/no message box configuration data
+ *      - const Zefir_PopupConfirmData* const data (C): Yes/no message box configuration data
+ *      - const Zefir_PopupConfirmData& data (C++): Yes/no message box configuration data
  *    Returns: bool (true if opened successfully)
  *    Related Structures:
- *      Zefir_MessageBoxYesNoData
+ *      Zefir_PopupConfirmData
  *        - const char* m_title: Message box title
  *        - const char* m_text: Message text
  *        - Zefir_Optional_Float m_customWidth: Optional custom width
@@ -1258,16 +1421,16 @@ namespace zefir::api
  *        - Zefir_Optional_ZefirCallback m_onConfirm: Optional callback on confirm
  *        - Zefir_Optional_ZefirCallback m_onDismiss: Optional callback on dismiss
  *
- * Zefir_openInputBoxInt
- *    C:   bool Zefir_openInputBoxInt(const Zefir_InputBoxIntData* const data)
- *    C++: bool zefir::api::popup::inputInt(const Zefir_InputBoxIntData& data)
+ * Zefir_openPopupInputInt
+ *    C:   bool Zefir_openPopupInputInt(const Zefir_PopupInputIntData* const data)
+ *    C++: bool zefir::api::popup::inputInt(const Zefir_PopupInputIntData& data)
  *    Description: Opens an input box for integers.
  *    Parameters:
- *      - const Zefir_InputBoxIntData* const data (C): Input box int configuration data
- *      - const Zefir_InputBoxIntData& data (C++): Input box int configuration data
+ *      - const Zefir_PopupInputIntData* const data (C): Input box int configuration data
+ *      - const Zefir_PopupInputIntData& data (C++): Input box int configuration data
  *    Returns: bool (true if opened successfully)
  *    Related Structures:
- *      Zefir_InputBoxIntData
+ *      Zefir_PopupInputIntData
  *        - const char* m_title: Input box title
  *        - const char* m_label: Input label
  *        - const char* m_text: Descriptive text
@@ -1283,16 +1446,16 @@ namespace zefir::api
  *        - Zefir_Optional_ZefirCallback m_onInputActive: Optional callback on input active
  *        - Zefir_Optional_ZefirCallback m_onInputRelease: Optional callback on input release
  *
- * Zefir_openInputBoxFloat
- *    C:   bool Zefir_openInputBoxFloat(const Zefir_InputBoxFloatData* const data)
- *    C++: bool zefir::api::popup::inputFloat(const Zefir_InputBoxFloatData& data)
+ * Zefir_openPopupInputFloat
+ *    C:   bool Zefir_openPopupInputFloat(const Zefir_PopupInputFloatData* const data)
+ *    C++: bool zefir::api::popup::inputFloat(const Zefir_PopupInputFloatData& data)
  *    Description: Opens an input box for floats.
  *    Parameters:
- *      - const Zefir_InputBoxFloatData* const data (C): Input box float configuration data
- *      - const Zefir_InputBoxFloatData& data (C++): Input box float configuration data
+ *      - const Zefir_PopupInputFloatData* const data (C): Input box float configuration data
+ *      - const Zefir_PopupInputFloatData& data (C++): Input box float configuration data
  *    Returns: bool (true if opened successfully)
  *    Related Structures:
- *      Zefir_InputBoxFloatData
+ *      Zefir_PopupInputFloatData
  *        - const char* m_title: Input box title
  *        - const char* m_label: Input label
  *        - const char* m_text: Descriptive text
@@ -1307,16 +1470,16 @@ namespace zefir::api
  *        - Zefir_Optional_ZefirCallback m_onInputActive: Optional callback on input active
  *        - Zefir_Optional_ZefirCallback m_onInputRelease: Optional callback on input release
  *
- * Zefir_openInputBoxText
- *    C:   bool Zefir_openInputBoxText(const Zefir_InputBoxTextData* const data)
- *    C++: bool zefir::api::popup::inputText(const Zefir_InputBoxTextData& data)
+ * Zefir_openPopupInputText
+ *    C:   bool Zefir_openPopupInputText(const Zefir_PopupInputTextData* const data)
+ *    C++: bool zefir::api::popup::inputText(const Zefir_PopupInputTextData& data)
  *    Description: Opens an input box for text.
  *    Parameters:
- *      - const Zefir_InputBoxTextData* const data (C): Input box text configuration data
- *      - const Zefir_InputBoxTextData& data (C++): Input box text configuration data
+ *      - const Zefir_PopupInputTextData* const data (C): Input box text configuration data
+ *      - const Zefir_PopupInputTextData& data (C++): Input box text configuration data
  *    Returns: bool (true if opened successfully)
  *    Related Structures:
- *      Zefir_InputBoxTextData
+ *      Zefir_PopupInputTextData
  *        - const char* m_title: Input box title
  *        - const char* m_text: Descriptive text
  *        - Zefir_Optional_Float m_customWidth: Optional custom width
@@ -1327,16 +1490,16 @@ namespace zefir::api
  *        - Zefir_Optional_ZefirCallback m_onInputActive: Optional callback on input active
  *        - Zefir_Optional_ZefirCallback m_onInputRelease: Optional callback on input release
  *
- * Zefir_openInputBoxTextHinted
- *    C:   bool Zefir_openInputBoxTextHinted(const Zefir_InputBoxHintedTextData* const data)
- *    C++: bool zefir::api::popup::inputTextHinted(const Zefir_InputBoxHintedTextData& data)
+ * Zefir_openPopupInputTextHinted
+ *    C:   bool Zefir_openPopupInputTextHinted(const Zefir_PopupInputHintedTextData* const data)
+ *    C++: bool zefir::api::popup::inputTextHinted(const Zefir_PopupInputHintedTextData& data)
  *    Description: Opens an input box for text with hints.
  *    Parameters:
- *      - const Zefir_InputBoxHintedTextData* const data (C): Hinted input box text configuration data
- *      - const Zefir_InputBoxHintedTextData& data (C++): Hinted input box text configuration data
+ *      - const Zefir_PopupInputHintedTextData* const data (C): Hinted input box text configuration data
+ *      - const Zefir_PopupInputHintedTextData& data (C++): Hinted input box text configuration data
  *    Returns: bool (true if opened successfully)
  *    Related Structures:
- *      Zefir_InputBoxHintedTextData
+ *      Zefir_PopupInputHintedTextData
  *        - const char* m_title: Input box title
  *        - const char* m_text: Descriptive text
  *        - const char** m_hints: Array of hint strings

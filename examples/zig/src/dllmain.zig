@@ -19,12 +19,12 @@ fn hashSourceLocation(comptime loc: std.builtin.SourceLocation) comptime_int {
 // Callback for button activation
 fn buttonOnActivate() callconv(std.builtin.CallingConvention.winapi) void {
     // Set up message box data
-    var messageBoxData = std.mem.zeroInit(c.Zefir_MessageBoxTextData, .{ .m_title = "Button Released".ptr, .m_text = "Button was released".ptr, .m_alignment = .{
+    var messageBoxData = std.mem.zeroInit(c.Zefir_PopupTextData, .{ .m_title = "Button Released".ptr, .m_text = "Button was released".ptr, .m_alignment = .{
         .m_value = c.Zefir_TextBlock_Alignment_Left,
         .m_hasValue = true,
     } });
     // Open message box
-    _ = c.Zefir_openMessageBoxText.?(&messageBoxData);
+    _ = c.Zefir_openPopupText.?(&messageBoxData);
 }
 
 // Callback for rendering window content
