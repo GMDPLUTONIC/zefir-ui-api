@@ -1,14 +1,18 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
-#include "../../../include/zefir_ui_api.h"
+#include "bools.h"
+#include <zefir_ui_api.h>
 
 #ifdef __cplusplus
 
 static void ZEFIR_CALLBACK showMessageBoxCpp()
 {
     zefir::api::popup::text({
+        // popup title
         .m_title = "Cpp Popup",
+        // text in the popup
         .m_text = "Hello from C++",
+        // position of the text
         .m_alignment = {.m_value = Zefir_TextBlock_Alignment_Center, .m_hasValue = true} });
 }
 
@@ -19,8 +23,18 @@ static void ZEFIR_CALLBACK renderContentCpp()
 
     zefir::api::cm::button({
         .m_uniqueId = ZEFIR_NEW_UID(),
-        .m_label = "Click me",
+        .m_label = "This is a button",
         .m_onActivate = {.m_value = &showMessageBoxCpp, .m_hasValue = true} });
+
+    zefir::api::cm::checkbox({
+        .m_uniqueId = ZEFIR_NEW_UID(),
+        .m_label = "This is a checkbox",
+        .m_value = &testBool });
+
+    zefir::api::cm::inputFloat({
+        .m_uniqueId = ZEFIR_NEW_UID(),
+        .m_label = "This is an input float",
+        .m_value = &testFloat });
 }
 
 static void ZEFIR_CALLBACK addWindowCpp()
@@ -33,12 +47,17 @@ static void ZEFIR_CALLBACK addWindowCpp()
 
 #endif 
 
+// c stuff
 static void ZEFIR_CALLBACK showMessageBoxC()
 {
     Zefir_MessageBoxTextData data{
+        // popup title
         .m_title = "C Popup",
+        // text in the popup
         .m_text = "Hello from C! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        // width of the popup
         .m_customWidth = {.m_value = 450, .m_hasValue = true},
+        // position of the text
         .m_alignment = {.m_value = Zefir_TextBlock_Alignment_Left, .m_hasValue = true} };
         
     Zefir_openMessageBoxText(&data);
@@ -49,12 +68,33 @@ static void ZEFIR_CALLBACK renderContentC()
     Zefir_renderText("Hello from C!");
     Zefir_renderText("This is a test of the C API.");
 
-    Zefir_ButtonData data{
+    Zefir_ButtonData btnData{
+        // button ID
         .m_uniqueId = ZEFIR_NEW_UID(),
-        .m_label = "Click me",
+        // text inside the button
+        .m_label = "This is a button",
+        // when clicked
         .m_onActivate = {.m_value = &showMessageBoxC, .m_hasValue = true} };
-
-    Zefir_renderButton(&data);
+    
+    Zefir_CheckboxData checkboxData{
+        // checkbox ID
+        .m_uniqueId = ZEFIR_NEW_UID(),
+        // text by the checkbox
+        .m_label = "This is a checkbox",
+        // bool that it uses
+        .m_value = &testBool };
+    
+    Zefir_InputFloatData iFData{
+        // input float ID
+        .m_uniqueId = ZEFIR_NEW_UID(),
+        // text right next to the input float
+        .m_label = "This is an input float",
+        // float for the input float
+        .m_value = &testFloat };
+        
+    Zefir_renderButton(&btnData);
+    Zefir_renderCheckbox(&checkboxData);
+    Zefir_renderInputFloat(&iFData);
 }
 
 static void ZEFIR_CALLBACK addWindowC()
@@ -71,9 +111,9 @@ DWORD WINAPI mainThread(LPVOID lpParam)
 {
     if (Zefir_initializeAPI_Create("ToastedMarshmellow.dll"))
     {
-#       ifdef __cplusplus
+#ifdef __cplusplus
         addWindowCpp();
-#       endif
+#endif
         addWindowC();
     }
     return S_OK;
@@ -98,4 +138,3 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     }
     return TRUE;
 }
-
